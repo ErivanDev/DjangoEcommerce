@@ -1,8 +1,5 @@
-from distutils.command.upload import upload
-from pyexpat import model
-from statistics import mode
-from unicodedata import category
 from django.db import models
+from django.urls import reverse
 
 # Create your models here.
 
@@ -14,6 +11,9 @@ class Category(models.Model):
 
     def __str__(self):
         return self.category_name
+
+    def get_url(self):
+        return reverse('products_by_category', args=[self.slug])
 
     class Meta:
         verbose_name = 'category'
