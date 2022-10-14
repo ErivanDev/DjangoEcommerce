@@ -1,9 +1,7 @@
-from itertools import product
-from unicodedata import category
-
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.db.models import Q
 
 from carts.models import CartItem
 from carts.views import _cart_id
@@ -52,3 +50,17 @@ def product_detail(request, category_slug, product_slug):
     }
 
     return render(request, 'store/product_detail.html', context)
+
+def search(request):
+    if 'keyword' in request.GET:
+        keyword__ = request.GET['keyword']
+        if keyword__:
+            products = Product.objects.order_by('-created_date').filter(Q(description__icontains=keyword__) | Q(name__icontains=keyword__))
+            products_count = products.count()
+
+    context = {
+        'products': products,
+        'products_count': products_count,
+    }
+
+    return render(request, 'store/store.html', context)
